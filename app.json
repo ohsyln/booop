@@ -1,0 +1,16 @@
+{
+   "expo": {
+    "name": "booop",
+    "icon": "./resources/icon.png",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "slug": "booop",
+    "sdkVersion": "25.0.0",
+    "ios": {
+      "bundleIdentifier": "com.sylnsyln.booop"
+    },
+    "android": {
+      "package": "com.sylnsyln.booop"
+    }
+   }
+ }
