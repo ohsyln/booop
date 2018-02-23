@@ -1,6 +1,6 @@
 import { Dimensions } from 'react-native'
 
-export const TILES_TO_WIN = 100
+export const TILES_TO_WIN = 110
 
 export const INF = 99999
 export const BOX_HEIGHT = Dimensions.get('window').height

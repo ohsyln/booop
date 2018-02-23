@@ -1,5 +1,6 @@
 import React from 'react'
 import { StyleSheet } from 'react-native'
+import { BOX_HEIGHT, BOX_WIDTH } from '../constants'
 
 export default StyleSheet.create({
   container: {
@@ -21,6 +22,10 @@ export default StyleSheet.create({
   actualDisplay: { 
     flex: 2,
     flexDirection: 'row',
+    marginTop: BOX_HEIGHT * 0.2,
+    marginBottom: BOX_HEIGHT * 0.2,
+    marginLeft: BOX_WIDTH * 0.1,
+    marginRight: BOX_WIDTH * 0.1,
   },
   player: { 
     flex: 1,

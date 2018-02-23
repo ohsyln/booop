@@ -18,23 +18,23 @@ export class StartScreen extends React.Component {
     super(props)
     this.state = {}
   }
-  getLength(obj){
-    return Object.keys(obj).length
-  }
-
-  registerPlayer(i, navigate){
-    this.setState({[i]: true},
-      () => this.getLength(this.state) === this.playerSize ? 
-        navigate('Play') : null
-    )
-    this.refs['p'+i].fadeOutLeftBig(FADE_TIME)
-  }
-
-  render() {
-    const { navigate } = this.props.navigation;
+  componentWillMount() { 
+    this.navigate = this.props.navigation.navigate
     this.playerSize = this.props.navigation.state.params.mode
     this.props.reset()
     this.props.setPlayers(this.playerSize)
+  }
+  getLength(obj){
+    return Object.keys(obj).length
+  }
+  registerPlayer(i){
+    this.setState({[i]: true},
+      () => this.getLength(this.state) === this.playerSize ? 
+        this.navigate('Play') : null
+    )
+    this.refs['p'+i].fadeOutLeftBig(FADE_TIME)
+  }
+  render() {
     return (
       <View style={styles.container}>
         {[...Array(this.playerSize)].map( 
@@ -42,8 +42,7 @@ export class StartScreen extends React.Component {
           <Animatable.View
             ref={'p'+i}
             style={[styles.button, {backgroundColor: COLORS[i]}]}
-            onTouchStart={() => this.registerPlayer(i, navigate)}
-            
+            onTouchStart={() => this.registerPlayer(i)}
             key={i}
           >
           </Animatable.View>

@@ -13,11 +13,11 @@ import {
 import * as Actions from '../actions'
 import styles from './resultStyle'
 import { NavigationActions } from 'react-navigation'
+import debounce from 'lodash'
 
 export class ResultScreen extends React.Component {
   constructor(props){
     super(props)
-    this.reset = false
   }
   getCols(score){ 
     return Math.ceil(score/TILES_PER_COL)
@@ -30,16 +30,16 @@ export class ResultScreen extends React.Component {
     return leftover
   }
   resetGame() { 
-    if(!this.reset) { 
-      this.reset = true
-      setTimeout(() => this.props.navigation.dispatch(NavigationActions.reset({ 
+    debounce(
+      this.props.navigation.dispatch(NavigationActions.reset({ 
         index: 0,
         actions: [
         NavigationActions.navigate({ routeName: 'Home' }),
         ],
-        key: null
-      })),1000)
-    }
+        key: null 
+      })),
+      1000
+    )
   }
 
   render() {
@@ -47,9 +47,6 @@ export class ResultScreen extends React.Component {
       <View 
         onTouchStart={() => this.resetGame()}
         style={styles.container}>
-        <View style={styles.sideFrame}/>
-        <View style={styles.mainFrame}>
-          <View style={styles.mainFramePad}/>
           <View style={styles.actualDisplay}>
             { this.props.counter.entrySeq().toArray().map(([k,val]) => 
               <View key={k} style={[styles.player]}>
@@ -81,12 +78,8 @@ export class ResultScreen extends React.Component {
                 </View>
               </View>
             ) 
-            
-            }
-          </View>
-          <View style={styles.mainFramePad}/>
+          }
         </View>
-        <View style={styles.sideFrame}/>
       </View>
     );
   }

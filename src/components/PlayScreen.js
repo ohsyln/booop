@@ -22,23 +22,24 @@ import {
   getRand,  
   createArray,
 } from '../constants'
+import debounce from 'lodash'
 
 export class PlayScreen extends React.Component {
   constructor(props){
     super(props)
   }
   componentWillMount() {
+    this.navigate = this.props.navigation.navigate
     this.totalBroken = 0
     this.brokenBeforeRegen = 0
     this.totalPlayers = this.props.count
     this.tileState = {}
     this.level = 0
-    this.ended = false
     this.generateTileColorMap()
   }
 
   getBlockNumber(i,j) { return i*TILE_PER_WIDTH[this.level]+j; }
-  hasGameEnded() { return !this.ended && this.totalBroken > TILES_TO_WIN }
+  hasGameEnded() { return this.totalBroken > TILES_TO_WIN }
   shouldRegenTiles() { return this.brokenBeforeRegen > this.getTotalTiles()/2 }
   getTotalTiles() { 
     return TILE_PER_HEIGHT[this.level] * TILE_PER_WIDTH[this.level] 
@@ -69,20 +70,19 @@ export class PlayScreen extends React.Component {
     this.brokenBeforeRegen = 0
     this.forceUpdate(this.regenTilesAnimation((v) => v === FLIPPED))
   }
-  endGame(navigate) { 
-    this.ended = true
-    for(var i=0; i<this.getTotalTiles(); i++) {this.refs[i].zoomOut(30)}
-    setTimeout(() => navigate('Result'),300)
+  endGame() { 
+    for(var i=0; i<this.getTotalTiles(); i++) {this.refs[i].zoomOut(FADE_TIME)}
+    debounce(this.navigate({key:'r',routeName:'Result'}), 1000)
   }
 
-  breakTile(tileIndex, player, navigate){ 
+  breakTile(tileIndex, player){ 
     this.props.addPoint(player)
     this.removeTileAnimation(tileIndex)
 
     this.totalBroken += 1;
     this.brokenBeforeRegen += 1
     this.tileState[tileIndex] = FLIPPED
-    if (this.hasGameEnded()) { this.endGame(navigate) }
+    if (this.hasGameEnded()) { this.endGame(this.navigate) }
     else { 
       if(this.shouldRegenTiles()) { this.regenTiles() }
       if(this.shouldLevelUp()) { this.levelUp() }
@@ -90,7 +90,6 @@ export class PlayScreen extends React.Component {
   }
 
   render() {
-    const { navigate } = this.props.navigation
     return (
       <View style={styles.gridView}>
         {createArray(TILE_PER_HEIGHT[this.level]).map( 
@@ -107,7 +106,7 @@ export class PlayScreen extends React.Component {
                     ]}
                     onTouchStart={() => 
                       this.breakTile(this.getBlockNumber(i,j), 
-                        this.tileState[this.getBlockNumber(i,j)],navigate)}
+                        this.tileState[this.getBlockNumber(i,j)])}
                     
                     key={j}
                   >
